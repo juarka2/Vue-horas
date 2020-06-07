@@ -72,7 +72,7 @@
       first-number
       last-number
     ></b-pagination>
-    <b-button user-router variant="primary" href="/about" id="agregarBtn"
+    <b-button user-router variant="primary" href="/cargar" id="agregarBtn"
       >Agregar registro</b-button
     >
   </div>
@@ -229,7 +229,7 @@ export default {
   display: flex;
   margin-top: 30px;
   align-items: flex-end;
-  padding: 5px 20%;
+  padding: 5px 20% 5px 14.5%;
   font-size: 1.3rem;
   max-width: 100%;
   justify-content: space-between;

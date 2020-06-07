@@ -31,11 +31,11 @@
         </b-col>
       </b-form-group>
       <b-form-group>
-        <b-row align-h="start">
-          <b-col class="horaInput" cols="2">
+        <b-row align-h="start" class="rowWidth">
+          <b-col class="inputRow" cols="2">
             <label class="labelAlignLeft" for="horaInicio">Hora inicio:</label>
           </b-col>
-          <b-col cols="3">
+          <b-col cols="3" class="noPaddingLeft">
             <b-form-timepicker
               id="horaInicio"
               :state="estadoHI"
@@ -44,7 +44,7 @@
               required
             ></b-form-timepicker>
           </b-col>
-          <b-col class="horaInput" cols="1">
+          <b-col class="inputRow" cols="1">
             <label class="labelAlignLeft" for="horaFin">Hora fin:</label>
           </b-col>
           <b-col cols="3">
@@ -57,7 +57,7 @@
               required
             ></b-form-timepicker>
           </b-col>
-          <b-col class="horaInput" cols="1">
+          <b-col class="inputRow" cols="1">
             <label class="labelAlignLeft" for="minutos">Minutos:</label>
           </b-col>
           <b-col class="inputmin" cols="1">
@@ -90,9 +90,9 @@
         </b-row>
       </b-form-group>
       <b-form-group>
-        <b-row align-v="center">
-          <b-col class="horaInput" cols="2">
-            <label class="labelAlignLeft">Clasificación</label>
+        <b-row align-v="center" class="rowWidth">
+          <b-col class="inputRow" cols="2">
+            <label class="labelAlignLeft">Clasificación:</label>
           </b-col>
           <b-col cols="3">
             <b-form-select
@@ -101,7 +101,7 @@
               required
             ></b-form-select>
           </b-col>
-          <b-col class="horaInput" cols="1">
+          <b-col class="inputRow" cols="1">
             <label class="labelAlignLeft">Tipo:</label>
           </b-col>
           <b-col cols="3">
@@ -153,9 +153,20 @@
         >
       </b-row>
       <div>
-        <b-alert :show="cancelStatus" dismissible>
-          ¿Seguro que quiere cancelar?
-          <b-button type="reset" variant="warning">Si</b-button>
+        <b-alert id="cancelAlert" variant="warning" :show="cancelStatus">
+          <p>
+            ¿Seguro que quiere cancelar?
+          </p>
+
+          <div id="cancelBtns">
+            <b-button id="cancelSi" href="/" variant="warning">Si</b-button>
+            <b-button
+              id="cancelNo"
+              @click="cancelStatus = false"
+              variant="warning"
+              >No</b-button
+            >
+          </div>
         </b-alert>
       </div>
       <!-- <b-row class="flex" align-v="center">
@@ -248,11 +259,30 @@ export default {
         this.selectedTipo,
         this.nota
       );
+
       this.checkErrores();
       if (this.errores.length > 0) {
         this.errorSubmit = true;
         return;
       }
+      // let payload = {
+      //   clasificación: {},
+      //   tipo: {},
+      //   horaInicio: `${this.inputFecha}T${this.inputHI}-0300`,
+      //   horaFin: `${this.inputFecha}T${this.inputHF}-0300`,
+      //   duracion_min: this.showMins,
+      // };
+
+      // fetch("http://127.0.0.1:4010/horas", {
+      //   method: "POST",
+      //    // data can be `string` or {object}!
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      // })
+      //   .then((res) => res.json())
+      //   .then((data) => console.log(data))
+      //   .catch((error) => console.error("Error:", error));
     },
     cancel() {
       this.cancelStatus = true;
@@ -385,7 +415,7 @@ export default {
 .inputs {
   margin-left: 5px;
 }
-.horaInput {
+.inputRow {
   display: flex;
   align-items: center;
   justify-content: left;
@@ -409,5 +439,23 @@ export default {
 
 .inputInline {
   padding-left: 10px;
+}
+.rowWidth {
+  max-width: 1086px;
+  margin: 0px;
+  max-height: 38px;
+}
+.noPaddingLeft {
+  padding-left: 0px;
+}
+#cancelAlert {
+  padding-right: 20px;
+}
+#cancelBtns {
+  display: flex;
+  justify-content: center;
+}
+#cancelNo {
+  margin-left: 15px;
 }
 </style>
