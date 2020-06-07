@@ -1,0 +1,675 @@
+openapi: 3.0.0
+info:
+  title: Horas
+  version: '1.0'
+  description: ''
+  contact:
+    name: Etsol S.R.L.
+    email: sistemas@etsol.com.ar
+    url: www.etsol.com.ar
+servers:
+  - url: 'http://localhost:4010'
+    description: Mock
+paths:
+  /horas:
+    get:
+      summary: Horas
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/HoraInfoDTO'
+                  first:
+                    type: boolean
+                  last:
+                    type: boolean
+                  number:
+                    type: integer
+                  numberOfElements:
+                    type: integer
+                  size:
+                    type: integer
+                  totalElements:
+                    type: integer
+                  totalPages:
+                    type: integer
+              examples:
+                Obtener 1 registro de hora:
+                  value:
+                    content:
+                      - id: 1
+                        clasificacion:
+                          id: 1
+                          nombre: Clasif. de hora 1
+                          porDefecto: S
+                        tipo:
+                          id: 1
+                          nombre: Tipo de hora 1
+                          porDefecto: S
+                        horaInicio: '2020-03-06T08:07:00-0300'
+                        horaFin: '2020-03-06T08:34:00-0300'
+                        duracion_min: 27
+                        tipoEntidad: CLI
+                        usuarioAlta: ADMIN
+                    first: true
+                    last: true
+                    size: 20
+                    numberOfElements: 5
+                    totalPages: 1
+      operationId: get-horas
+      description: Consultar las horas por distintos criterios
+    post:
+      summary: ''
+      operationId: post-horas
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: Id del registro creado
+              examples:
+                example-1: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    description: Código de error http
+                  code:
+                    type: string
+                    description: Código de error
+                  message:
+                    type: string
+                    description: Mensaje de error
+                  exception:
+                    type: string
+                    description: Mensaje de la excepción
+                required:
+                  - status
+                  - code
+                  - message
+              examples:
+                Clasificación  no encontrada:
+                  value:
+                    status: 404
+                    code: HR_NOT_FOUND_CLASIF
+                    message: Clasifcación de horas no encontrada
+                    exception: null
+      description: Agregar registro de horas
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateHoraDTO'
+            examples:
+              Ejemplo 1:
+                value:
+                  clasif: 1
+                  tipo: 2
+                  entidadId: 1235
+                  entidadTipo: CLI
+                  nota: NOTA VARIADA
+                  os_ids:
+                    - 1
+                  empleado: 4
+                  horaInicio: '18/05/2020T00:00:00'
+                  horaFin: '18/05/2020T00:50:00'
+                  duracion_min: 50
+          application/xml:
+            schema:
+              type: object
+              properties:
+                clasif:
+                  type: integer
+                  description: Clasificación de horas (tabla HORASCLASIF)
+                tipo:
+                  type: integer
+                  description: TIpo de horas (tabla HORASTIPOS)
+                horaInicio:
+                  type: string
+                  description: 'Hora inicio del registro. Formato: ‘DD/MM/YYYYThh:mm:ss’'
+                horaFin:
+                  type: string
+                  description: 'Hora fin del registro. Formato: ‘DD/MM/YYYYThh:mm:ss'
+                duracion_min:
+                  type: integer
+                  description: Diferencia en minutos entre horaFin y horaInicio
+                entidadId:
+                  type: integer
+                  description: 'Id de la entidad. Por ej: si es cliente, es el id del cliente'
+                entidadTipo:
+                  type: string
+                  description: 'Tipo de entidad (tabla ENTTIPOS). Ej: si es cliente CLI'
+                nota:
+                  type: string
+                  description: Anotación que se quiera agregar al registro de horas
+                os_ids:
+                  type: array
+                  description: 'Ids de las órdenes de servicio vinculadas. Ej: [1, 12, 553]'
+                  items:
+                    type: integer
+                empleado:
+                  type: integer
+                  description: 'Id de empleado. Ej: 3422'
+          multipart/form-data:
+            schema:
+              type: object
+              properties: {}
+          text/html:
+            schema:
+              type: object
+              properties: {}
+          text/plain:
+            schema:
+              type: object
+              properties:
+                tipo:
+                  type: integer
+                clasif:
+                  type: integer
+                horaInicio:
+                  type: string
+                horaFin:
+                  type: string
+                duracion_min:
+                  type: integer
+                entidadId:
+                  type: integer
+                entidadTipo:
+                  type: string
+                nota:
+                  type: string
+                os_ids:
+                  type: array
+                  items:
+                    type: integer
+                empleado:
+                  type: integer
+            examples:
+              Ejemplo 1:
+                value:
+                  clasif: 1
+                  tipo: 2
+                  entidadId: 1235
+                  entidadTipo: CLI
+                  nota: NOTA VARIADA
+                  os_ids:
+                    - 1
+                  empleado: 4
+                  horaInicio: '18/05/2020T00:00:00'
+                  horaFin: '18/05/2020T00:50:00'
+                  duracion_min: 50
+          application/EDI-X12:
+            schema:
+              type: object
+              properties: {}
+        description: ''
+  /horas-tipos:
+    get:
+      summary: Tipos de horas
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TipoHoraInfoDTO'
+              examples:
+                Respuesta 1 tipo:
+                  value:
+                    - id: 1
+                      nombre: Tipo de hora 1
+                      porDefecto: S
+      operationId: get-horas-tipos
+  /horas-clasif:
+    get:
+      summary: ''
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ClasifHoraInfoDTO'
+              examples:
+                Respuesta 1 clasif.:
+                  value:
+                    - id: 1
+                      nombre: Clasif. de hora 1
+                      porDefecto: S
+      operationId: get-horas-clasif
+  /empleados:
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/EmpleadoInfoDTO'
+                  number:
+                    type: integer
+                  first:
+                    type: boolean
+                  last:
+                    type: boolean
+                  numberOfElements:
+                    type: integer
+                  totalPages:
+                    type: string
+                  totalElements:
+                    type: integer
+              examples:
+                Ejemplo respuesta 1 empleado:
+                  value:
+                    number: 0
+                    numberOfElements: 1
+                    totalElements: 1
+                    totalPages: 1
+                    size: 1
+                    last: false
+                    first: true
+                    content:
+                      - id: 5
+                        legajo: 1
+                        entidad:
+                          razon_social: GHIO PAOLA EVANGELINA
+                        clasificaciones:
+                          - id: 2
+                            nombre: COBRADOR
+      operationId: get-empleadosd
+      parameters:
+        - schema:
+            type: number
+          in: query
+          name: legajo
+          description: Legajo del empleado
+    parameters: []
+  /clientes:
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  _embedded:
+                    type: object
+                    properties:
+                      clienteResources:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/ClienteResource'
+                      '':
+                        type: string
+                  page:
+                    type: object
+                    properties:
+                      size:
+                        type: integer
+                      totalElements:
+                        type: integer
+                      totalPages:
+                        type: integer
+                      number:
+                        type: integer
+                      '':
+                        type: string
+              examples:
+                Resultado 1 cliente:
+                  value:
+                    _embedded:
+                      clienteResources:
+                        - cliId: 1
+                          codigo: '00000'
+                          razonSocial: CONSUMIDOR FINAL
+                          nombreFantasia: CONSUMIDOR FINAL
+                    page:
+                      size: 1
+                      totalElements: 1
+                      totalPages: 1
+                      number: 0
+            application/xml:
+              schema:
+                type: object
+                properties: {}
+      operationId: get-clientes
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: codigo
+      description: Obtener clientes por distintos criterios
+  '/orden-servicio/cliente/{clienteId}':
+    parameters:
+      - schema:
+          type: number
+        name: clienteId
+        in: path
+        required: true
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    codigo:
+                      type: string
+                    descripcion:
+                      type: string
+                    estado:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        nombre:
+                          type: string
+                        '':
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                            nombre:
+                              type: string
+                    cpr_os:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        numero:
+                          type: integer
+                        pto_vta:
+                          type: integer
+                        letra:
+                          type: string
+                        fec_emision:
+                          type: string
+              examples:
+                OS id 305:
+                  value:
+                    - id: 305
+                      codigo: RELEVAMIENTO
+                      descripcion: RELEVAMIENTO DE USO DEL EQUIPO
+                      estado:
+                        id: 12
+                        nombre: SIN REPARACIÓN
+                        etapa:
+                          id: 6
+                          nombre: SIN REPARACIÓN
+                      cpr_os:
+                        id: 2419899
+                        numero: 275
+                        letra: X
+                        pto_vta: 1
+                        fec_emision: '2018-10-02'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                  code:
+                    type: string
+                  message:
+                    type: string
+                  exception:
+                    type: string
+              examples:
+                Cliente no encontrado:
+                  value:
+                    status: 404
+                    code: CLI_NOT_FOUND
+                    message: 'No se encontró un cliente con el código [123A]'
+                    exception: null
+      operationId: get-orden-servicio-cliente-clienteId
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: etapas_id
+          description: Id de etapas sepadadas por coma
+components:
+  schemas:
+    UpdateHoraDTO:
+      title: HoraDTO
+      type: object
+      x-examples:
+        Ejemplo 1:
+          clasif: 1
+          tipo: 2
+          entidadId: 1235
+          entidadTipo: CLI
+          nota: NOTA VARIADA
+          os_ids:
+            - 1
+          empleado: 4
+          horaInicio: '18/05/2020T00:00:00'
+          horaFin: '18/05/2020T00:50:00'
+          duracion_min: 50
+      properties:
+        clasif:
+          type: integer
+          description: Clasificación de horas (tabla HORASCLASIF)
+        tipo:
+          type: integer
+          description: Tipo de horas (tabla HORASTIPOS)
+        horaInicio:
+          type: string
+          description: 'Hora inicio del registro. Formato: ‘DD/MM/YYYYThh:mm:ss’'
+        horaFin:
+          type: string
+          description: 'Hora fin del registro. Formato: ‘DD/MM/YYYYThh:mm:ss’'
+        duracion_min:
+          type: string
+          description: Diferencia en minutos entre horaFin y horaInicio
+        empleado:
+          type: integer
+          description: 'Id de empleado. Ej: 3422'
+        entidadId:
+          type: integer
+          description: 'Id de la entidad. Por ej: si es cliente, es el id del cliente'
+        entidadTipo:
+          type: string
+          description: 'Tipo de entidad (tabla ENTTIPOS). Ej: si es cliente CLI'
+        nota:
+          type: string
+          description: Anotación que se quiera agregar al registro de horas
+        os_ids:
+          type: array
+          description: 'Ids de las órdenes de servicio vinculadas. Ej: [1, 12, 553]'
+          items:
+            type: number
+    HoraInfoDTO:
+      title: HoraInfoDTO
+      type: object
+      x-examples:
+        Hora id 1:
+          id: 1
+          clasificacion:
+            id: 1
+            nombre: Clasif. de hora 1
+            porDefecto: S
+          tipo:
+            id: 1
+            nombre: Tipo de hora 1
+            porDefecto: S
+          horaInicio: '2020-03-06T08:07:00-0300'
+          horaFin: '2020-03-06T08:34:00-0300'
+          duracion_min: 27
+          tipoEntidad: CLI
+          usuarioAlta: ADMIN
+      properties:
+        id:
+          type: integer
+        clasificacion:
+          $ref: '#/components/schemas/ClasifHoraInfoDTO'
+        tipo:
+          $ref: '#/components/schemas/TipoHoraInfoDTO'
+        duracion_min:
+          type: integer
+        fechaAlta:
+          type: string
+        fechaModif:
+          type: string
+        horaInicio:
+          type: string
+        horaFin:
+          type: string
+        idEntidad:
+          type: integer
+        nota:
+          type: string
+        tipoEntidad:
+          type: string
+        usuarioAlta:
+          type: string
+    TipoHoraInfoDTO:
+      title: TipoHoraDTO
+      type: object
+      properties:
+        id:
+          type: integer
+        nombre:
+          type: string
+          description: Descripción del tipo de hora
+        porDefecto:
+          type: string
+          description: "Indica si el tipo de hora es por defecto ('S' o 'N')"
+      x-examples:
+        Tipo hora 1:
+          id: 1
+          nombre: Tipo de hora 1
+          porDefecto: S
+    ClasifHoraInfoDTO:
+      title: ClasifHoraDTO
+      type: object
+      properties:
+        id:
+          type: integer
+        nombre:
+          type: string
+          description: Descripción de la clasificación
+        porDefecto:
+          type: string
+          description: "Indica si es la clasificación por defecto ('S' o 'N')"
+      x-examples:
+        Clasif. 1:
+          id: 1
+          nombre: Clasif. de hora 1
+          porDefecto: S
+    EmpleadoInfoDTO:
+      title: Empleado
+      type: object
+      properties:
+        id:
+          type: integer
+        legajo:
+          type: string
+        entidad:
+          $ref: '#/components/schemas/EntidadInfoDTO'
+        clasificaciones:
+          type: array
+          description: Clasificaciones del empleado
+          items:
+            $ref: '#/components/schemas/EmplClasifInfoDTO'
+      description: Información del empleado
+      x-examples:
+        Ejemplo 1:
+          id: 5
+          legajo: 1
+          entidad:
+            razon_social: GHIO PAOLA EVANGELINA
+          clasificaciones:
+            - id: 2
+              nombre: COBRADOR
+    EntidadInfoDTO:
+      title: EntidadInfoDTO
+      type: object
+      properties:
+        id:
+          type: integer
+        razon_social:
+          type: string
+    EmplClasifInfoDTO:
+      title: EmplClasifInfoDTO
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Id de la clasificación
+        nombre:
+          type: string
+          description: Nombre de la clasificación
+      x-examples:
+        example-1: {}
+    ClienteResource:
+      title: ClienteInfoDTO
+      type: object
+      properties:
+        id:
+          type: integer
+        codigo:
+          type: string
+        razonSocial:
+          type: string
+        nombreFantasia:
+          type: string
+      x-examples:
+        Cliente consumidor final:
+          cliId: 1
+          codigo: '00000'
+          razonSocial: CONSUMIDOR FINAL
+          nombreFantasia: CONSUMIDOR FINAL
+  securitySchemes:
+    JWT:
+      name: Authorization
+      type: apiKey
+      in: header
+security:
+  - undefined: []
