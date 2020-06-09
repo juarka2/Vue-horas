@@ -146,6 +146,10 @@ export default {
       e.preventDefault();
 
       this.notFound = false;
+      if (!this.fechaDesde || !this.fechaHasta) {
+        this.items = [{}, {}, {}, {}, {}];
+        return;
+      }
       if (!this.checkFechas()) {
         return;
       }
@@ -193,17 +197,23 @@ export default {
                 },
               ];
             }
-            if (this.items.length === 0) {
-              this.items = [{}, {}, {}, {}, {}];
-              this.notFound = true;
-            } else {
-              this.isSet = true;
-              this.notFound = false;
-            }
+            this.resultNotFound();
           });
-          $("td").css("vertical-align", "middle");
+          this.tdCSS();
         })
         .catch((err) => console.log(err));
+    },
+    resultNotFound() {
+      if (this.items.length === 0) {
+        this.items = [{}, {}, {}, {}, {}];
+        this.notFound = true;
+      } else {
+        this.isSet = true;
+        this.notFound = false;
+      }
+    },
+    tdCSS() {
+      $("td").css("vertical-align", "middle");
     },
   },
   watch: {
