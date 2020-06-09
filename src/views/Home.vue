@@ -110,18 +110,17 @@ export default {
     };
   },
   mounted() {
-    console.log(
-      ((document.querySelector("th").style.borderTopColor = "transparent"),
-      document.querySelectorAll("th"))
-    );
+    $("#input-1").datepicker({
+      autoclose: true,
+      todayHighlight: true,
+      dateFormat: "yyyy/mm/dd",
+    });
+
     let elems = document.querySelectorAll("th");
     for (let i = 0; i < elems.length; i++) {
       elems[i].style.borderTopColor = "transparent";
     }
     $("#table").css({ "border-radius": "12px", "margin-top": "20px" });
-    // for (let i = 0; i < $("th").length; i++) {
-    //   console.log($("th")[i].css);
-    // }
   },
   computed: {
     rows() {
@@ -133,17 +132,24 @@ export default {
     handleBtn(data) {
       console.log(data);
     },
-    onSubmit(e) {
-      e.preventDefault();
-      console.log(this.fechaDesde, this.fechaHasta);
-      this.notFound = false;
+    checkFechas() {
       if (this.fechaDesde > this.fechaHasta) {
         this.errorFechas = true;
         this.items = [{}, {}, {}, {}, {}];
-        return 0;
+        return false;
       } else {
         this.errorFechas = false;
+        return true;
       }
+    },
+    onSubmit(e) {
+      e.preventDefault();
+
+      this.notFound = false;
+      if (!this.checkFechas()) {
+        return;
+      }
+
       fetch("http://127.0.0.1:4010/horas")
         .then((res) => res.json())
         .then((data) => {
@@ -168,7 +174,7 @@ export default {
             if (fechaInicio > FIaux && fechaFin < FFaux) {
               let HIaux = hora.horaInicio.substring(11, 19);
               let HFaux = hora.horaFin.substring(11, 19);
-              //console.log(hora.horaFin.indexOf("T"), hora.horaFin.indexOf("-"));
+
               let fechaAux = [];
               fechaAux[2] = hora.horaInicio.substring(0, 4);
               fechaAux[1] = hora.horaInicio.substring(5, 7);
@@ -191,10 +197,6 @@ export default {
               this.items = [{}, {}, {}, {}, {}];
               this.notFound = true;
             } else {
-              // this.fields = [
-              //   ...this.fields,
-              //   { key: "Ver", formatter: "verFormater" },
-              // ];
               this.isSet = true;
               this.notFound = false;
             }

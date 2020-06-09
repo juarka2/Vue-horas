@@ -21,46 +21,83 @@
           </b-col>
         </b-row>
       </b-form-group>
-      <b-form-group label="Fecha:" label-class="text-left" label-cols-lg="1">
-        <b-col class="inputs" cols="4">
-          <b-form-datepicker
-            id="example-datepicker"
+      <b-form-group label="Fecha:" label-class="text-left" label-cols="1">
+        <b-input-group class="col-4 noPaddingLeft">
+          <b-form-input
+            id="example-input"
             v-model="inputFecha"
+            type="text"
+            placeholder="AAAA-MM-DD"
+            autocomplete="off"
             required
-          ></b-form-datepicker>
-        </b-col>
+            class="inputTextCenter"
+          ></b-form-input>
+          <b-input-group-append>
+            <b-form-datepicker
+              v-model="inputFecha"
+              button-only
+              right
+              locale="es"
+              aria-controls="example-input"
+              @context="onContext"
+            ></b-form-datepicker>
+          </b-input-group-append>
+        </b-input-group>
       </b-form-group>
       <b-form-group>
         <b-row align-h="start" class="rowWidth">
-          <b-col class="inputRow" cols="2">
+          <b-col cols="1" class="inputRowLeft">
             <label class="labelAlignLeft" for="horaInicio">Hora inicio:</label>
           </b-col>
-          <b-col cols="3" class="noPaddingLeft">
-            <b-form-timepicker
-              id="horaInicio"
-              :state="estadoHI"
-              v-model="inputHI"
-              class="mb-2"
-              required
-            ></b-form-timepicker>
+          <b-col class="noPaddingLeft" cols="3">
+            <b-input-group>
+              <b-form-input
+                id="horaInicio"
+                v-model="inputHI"
+                :state="estadoHI"
+                type="text"
+                placeholder="HH:mm"
+                class="inputTextCenter"
+              ></b-form-input>
+              <b-input-group-append>
+                <b-form-timepicker
+                  v-model="inputHI"
+                  button-only
+                  right
+                  locale="es"
+                  aria-controls="horaInicio"
+                ></b-form-timepicker>
+              </b-input-group-append>
+            </b-input-group>
           </b-col>
-          <b-col class="inputRow" cols="1">
+          <b-col cols="1" class="inputRowCenter">
             <label class="labelAlignLeft" for="horaFin">Hora fin:</label>
           </b-col>
-          <b-col cols="3">
-            <b-form-timepicker
-              id="horaFin"
-              :state="estadoHF"
-              v-model="inputHF"
-              locale="de"
-              class="mb-2"
-              required
-            ></b-form-timepicker>
+          <b-col cols="3" class="noPaddingLeft">
+            <b-input-group>
+              <b-form-input
+                id="horaFin"
+                v-model="inputHF"
+                :state="estadoHF"
+                type="text"
+                placeholder="HH:mm"
+                class="inputTextCenter"
+              ></b-form-input>
+              <b-input-group-append>
+                <b-form-timepicker
+                  v-model="inputHF"
+                  button-only
+                  right
+                  locale="es"
+                  aria-controls="horaFin"
+                ></b-form-timepicker>
+              </b-input-group-append>
+            </b-input-group>
           </b-col>
-          <b-col class="inputRow" cols="1">
+          <b-col cols="2" class="inputRowCenter">
             <label class="labelAlignLeft" for="minutos">Minutos:</label>
           </b-col>
-          <b-col class="inputmin" cols="1">
+          <b-col cols="2" class="inputMin">
             <b-form-input
               tabindex="-1"
               id="minutos"
@@ -91,7 +128,17 @@
       </b-form-group>
       <b-form-group>
         <b-row align-v="center" class="rowWidth">
-          <b-col class="inputRow" cols="2">
+          <b-col class="inputRowLeft " cols="1">
+            <label class="labelAlignLeft">Tipo:</label>
+          </b-col>
+          <b-col cols="3" class="noPaddingLeft">
+            <b-form-select
+              v-model="selectedTipo"
+              :options="optionsTipo"
+              required
+            ></b-form-select>
+          </b-col>
+          <b-col class="inputRowCenter" cols="2">
             <label class="labelAlignLeft">Clasificación:</label>
           </b-col>
           <b-col cols="3">
@@ -101,20 +148,10 @@
               required
             ></b-form-select>
           </b-col>
-          <b-col class="inputRow" cols="1">
-            <label class="labelAlignLeft">Tipo:</label>
-          </b-col>
-          <b-col cols="3">
-            <b-form-select
-              v-model="selectedTipo"
-              :options="optionsTipo"
-              required
-            ></b-form-select>
-          </b-col>
         </b-row>
       </b-form-group>
       <b-form-group label="Nota:" label-class="text-left" label-cols-lg="1">
-        <b-col class="inputs" cols="11">
+        <b-col class="inputs noPaddingLeft noPaddingRight" cols="11">
           <b-form-textarea
             id="textarea"
             v-model="nota"
@@ -124,6 +161,15 @@
         </b-col>
       </b-form-group>
       <div>
+        <b-alert
+          :show="saveSuccess"
+          variant="success"
+          id="saveAlert"
+          dismissible
+          @dismissed="saveSuccess = false"
+          ><p>Guardado con éxito!</p>
+        </b-alert>
+
         <b-alert
           :show="errorSubmit"
           class="text-left"
@@ -169,17 +215,6 @@
           </div>
         </b-alert>
       </div>
-      <!-- <b-row class="flex" align-v="center">
-        <b-col align-self="center" class="label" cols="1">
-          <label>Personal:</label>
-        </b-col>
-        <b-col cols="4">
-          
-        </b-col>
-        <b-col cols="7"
-          >
-        </b-col>
-      </b-row> -->
     </b-form>
   </b-container>
 </template>
@@ -194,6 +229,7 @@ export default {
       inputPersona: "",
       showPersona: "",
       inputFecha: null,
+      selectedFecha: "",
       estadoHI: null,
       estadoHF: null,
       inputCliente: "",
@@ -212,6 +248,9 @@ export default {
       cancelStatus: false,
       errores: [],
       errorSubmit: false,
+      allClasif: [],
+      allTipos: [],
+      saveSuccess: false,
     };
   },
   mounted() {
@@ -219,6 +258,9 @@ export default {
     this.getTipo();
   },
   methods: {
+    onContext(ctx) {
+      this.selectedFecha = ctx.selectedYMD;
+    },
     getClasif() {
       fetch("http://127.0.0.1:4010/horas-clasif")
         .then((res) => {
@@ -230,6 +272,7 @@ export default {
               ...this.optionsClasif,
               { value: elem.id, text: elem.nombre },
             ];
+            this.allClasif = [...this.allClasif, elem];
           });
         })
         .catch((e) => console.log(e));
@@ -245,44 +288,49 @@ export default {
               ...this.optionsTipo,
               { value: elem.id, text: elem.nombre },
             ];
+            this.allTipos = [...this.allTipos, elem];
           });
         })
         .catch((e) => console.log(e));
     },
     submit() {
-      console.log(
-        this.inputPersona,
-        this.inputFecha,
-        this.inputHI,
-        this.inputHF,
-        this.selectedClasif,
-        this.selectedTipo,
-        this.nota
-      );
-
+      this.saveSuccess = false;
       this.checkErrores();
       if (this.errores.length > 0) {
         this.errorSubmit = true;
         return;
+      } else {
+        this.errorSubmit = false;
       }
-      // let payload = {
-      //   clasificación: {},
-      //   tipo: {},
-      //   horaInicio: `${this.inputFecha}T${this.inputHI}-0300`,
-      //   horaFin: `${this.inputFecha}T${this.inputHF}-0300`,
-      //   duracion_min: this.showMins,
-      // };
+      let payload = {
+        clasificación: this.allClasif[this.selectedClasif - 1],
+        tipo: this.selectedTipo,
+        horaInicio: `${this.inputFecha}T${this.inputHI}-0300`,
+        horaFin: `${this.inputFecha}T${this.inputHF}-0300`,
+        duracion_min: this.showMins.toString(),
+      };
 
-      // fetch("http://127.0.0.1:4010/horas", {
-      //   method: "POST",
-      //    // data can be `string` or {object}!
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //   },
-      // })
-      //   .then((res) => res.json())
-      //   .then((data) => console.log(data))
-      //   .catch((error) => console.error("Error:", error));
+      fetch("http://127.0.0.1:4010/horas", {
+        method: "POST",
+        body: JSON.stringify(payload), // data can be `string` or {object}!
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then((res) => {
+          console.log(res);
+          if (res.status == 201) {
+            this.saveSuccess = true;
+          }
+        })
+        .catch((e) => console.log(e));
+    },
+    ValidarHora(hora) {
+      var isValid = /^([0-1]?[0-9]|2[0-4]):([0-5][0-9])(:[0-5][0-9])?$/.test(
+        hora
+      );
+
+      return isValid;
     },
     cancel() {
       this.cancelStatus = true;
@@ -301,13 +349,22 @@ export default {
       if (!this.inputFecha) {
         this.errores = [...this.errores, "Ingrese fecha"];
       }
+      if (this.inputFecha && !this.selectedFecha) {
+        this.errores = [...this.errores, "fecha no válida"];
+      }
       if (!this.inputHI) {
         this.errores = [...this.errores, "Ingrese hora de inicio"];
+      }
+      if (this.inputHI && !this.ValidarHora(this.inputHI)) {
+        this.errores = [...this.errores, "hora de inicio no válida"];
       }
       if (!this.inputHF) {
         this.errores = [...this.errores, "Ingrese hora de fin"];
       }
-      if (this.auxHI > this.auxHF) {
+      if (this.inputHF && !this.ValidarHora(this.inputHF)) {
+        this.errores = [...this.errores, "hora de fin no válida"];
+      }
+      if (!this.inputHI && this.inputHF && this.auxHI > this.auxHF) {
         this.errores = [
           ...this.errores,
           "hora de inicio posterior a hora de fin",
@@ -405,6 +462,9 @@ export default {
   border-radius: 12px;
   background-color: rgb(201, 201, 201);
 }
+label {
+  margin-bottom: 0px;
+}
 .label {
   margin-top: 10px;
 }
@@ -412,19 +472,35 @@ export default {
   margin-bottom: 20px;
 }
 
-.inputs {
+/* .inputs {
   margin-left: 5px;
-}
-.inputRow {
+} */
+.inputRowLeft {
   display: flex;
   align-items: center;
   justify-content: left;
   max-width: 115px;
   padding: 0px;
 }
+.inputRowCenter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 115px;
+  padding: 0px;
+}
+.inputMin {
+  max-width: 16.2%;
+}
+.inputMin > input {
+  text-align: center;
+}
 .labelAlignLeft {
   text-align: left !important;
   padding: 0px;
+}
+.inputTextCenter {
+  text-align: center;
 }
 .buttons {
   margin: 10px auto;
@@ -436,7 +512,9 @@ export default {
 .buttons > button {
   margin-left: 10px;
 }
-
+.noPaddingLeft {
+  padding-left: 0px;
+}
 .inputInline {
   padding-left: 10px;
 }
@@ -448,9 +526,14 @@ export default {
 .noPaddingLeft {
   padding-left: 0px;
 }
-#cancelAlert {
+.noPaddingRight {
+  padding-right: 0px;
+}
+#cancelAlert,
+#saveAlert {
   padding-right: 20px;
 }
+
 #cancelBtns {
   display: flex;
   justify-content: center;
