@@ -44,6 +44,12 @@
           </b-input-group-append>
         </b-input-group>
       </b-form-group>
+
+      <TableCargaHoras
+        :Fecha="inputFecha"
+        :Personal="inputPersona"
+      ></TableCargaHoras>
+
       <b-form-group>
         <b-row align-h="start" class="rowWidth">
           <b-col cols="1" class="inputRowLeft">
@@ -150,6 +156,18 @@
           </b-col>
         </b-row>
       </b-form-group>
+      <b-form-group
+        label="Ordenes de servicio:"
+        label-class="text-left noPaddingLeft"
+        label-cols-lg="1"
+      >
+        <b-col class="inputs noPaddingLeft noPaddingRight" cols="11">
+          <b-form-select
+            v-model="selectedOrdenes"
+            :options="optionsOrdenes"
+          ></b-form-select>
+        </b-col>
+      </b-form-group>
       <b-form-group label="Nota:" label-class="text-left" label-cols-lg="1">
         <b-col class="inputs noPaddingLeft noPaddingRight" cols="11">
           <b-form-textarea
@@ -220,9 +238,15 @@
 </template>
 
 <script>
-var moment = require("moment"); // require
+var moment = require("moment");
 moment().format();
+
+import TableCargaHoras from "../components/TableCargaHoras";
+
 export default {
+  components: {
+    TableCargaHoras,
+  },
   name: "cargaHoras",
   data() {
     return {
@@ -230,6 +254,7 @@ export default {
       showPersona: "",
       inputFecha: null,
       selectedFecha: "",
+
       estadoHI: null,
       estadoHF: null,
       inputCliente: "",
@@ -251,6 +276,11 @@ export default {
       allClasif: [],
       allTipos: [],
       saveSuccess: false,
+      selectedOrdenes: "",
+      optionsOrdenes: [
+        { value: null, text: "Seleccione orden de servicio..." },
+      ],
+      allOrdenes: [],
     };
   },
   mounted() {
@@ -318,7 +348,6 @@ export default {
         },
       })
         .then((res) => {
-          console.log(res);
           if (res.status == 201) {
             this.saveSuccess = true;
           }
@@ -382,6 +411,36 @@ export default {
       if (!this.selectedTipo) {
         this.errores = [...this.errores, "Seleccione tipo"];
       }
+      if (!this.selectedOrdenes) {
+        this.errores = [...this.errores, "Seleccione orden de servicio"];
+      }
+    },
+    getOrdenes() {
+      fetch(`http://127.0.0.1:4010/orden-servicio/cliente/${this.inputCliente}`)
+        .then((res) => {
+          return res.json();
+        })
+        .then((data) => {
+          console.log(data);
+          if (data) {
+            this.allOrdenes = [...data];
+            data.forEach((item) => {
+              this.optionsOrdenes = [
+                ...this.optionsOrdenes,
+                {
+                  value: item.id,
+                  text: `ID: ${item.id} - ${item.descripcion}`,
+                },
+              ];
+            });
+          } else {
+            this.allOrdenes = [];
+            this.optionsOrdenes = [
+              { value: null, text: "Seleccione orden de servicio..." },
+            ];
+          }
+        })
+        .catch((e) => console.log(e));
     },
   },
   watch: {
@@ -403,7 +462,6 @@ export default {
         });
     },
     inputCliente() {
-      //   let clientes;
       fetch(`http://127.0.0.1:4010/clientes?codigo=${this.inputCliente}`)
         .then((res) => {
           return res.json();
@@ -414,6 +472,7 @@ export default {
         .catch((e) => {
           console.log(e);
         });
+      this.getOrdenes();
     },
     clienteResp() {
       this.clienteResp.clienteResources.forEach((cliente) => {

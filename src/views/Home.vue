@@ -80,7 +80,7 @@
 
 <script>
 const $ = require("jquery");
-// Lo declaramos globalmente
+
 window.$ = $;
 export default {
   name: "home",
@@ -110,11 +110,11 @@ export default {
     };
   },
   mounted() {
-    $("#input-1").datepicker({
-      autoclose: true,
-      todayHighlight: true,
-      dateFormat: "yyyy/mm/dd",
-    });
+    // $("#input-1").datepicker({
+    //   autoclose: true,
+    //   todayHighlight: true,
+    //   dateFormat: "yyyy/mm/dd",
+    // });
 
     let elems = document.querySelectorAll("th");
     for (let i = 0; i < elems.length; i++) {
