@@ -161,15 +161,14 @@
         label-class="text-left noPaddingLeft"
         label-cols-lg="1"
       >
-        <b-col
-          class="inputs noPaddingLeft noPaddingRight alignSelfCenter"
-          cols="11"
-        >
-          <b-form-select
-            v-model="selectedOrdenes"
-            :options="optionsOrdenes"
-          ></b-form-select>
-        </b-col>
+        <div class="alignItemsCenter">
+          <b-col class="inputs noPaddingLeft noPaddingRight" cols="11">
+            <b-form-select
+              v-model="selectedOrdenes"
+              :options="optionsOrdenes"
+            ></b-form-select>
+          </b-col>
+        </div>
       </b-form-group>
       <b-form-group label="Nota:" label-class="text-left" label-cols-lg="1">
         <b-col class="inputs noPaddingLeft noPaddingRight" cols="11">
@@ -603,7 +602,9 @@ label {
 #cancelNo {
   margin-left: 15px;
 }
-.alignSelfCenter {
-  align-self: center;
+.alignItemsCenter {
+  display: flex;
+  align-items: center;
+  padding-top: 12px;
 }
 </style>
