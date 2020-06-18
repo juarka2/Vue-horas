@@ -161,7 +161,10 @@
         label-class="text-left noPaddingLeft"
         label-cols-lg="1"
       >
-        <b-col class="inputs noPaddingLeft noPaddingRight" cols="11">
+        <b-col
+          class="inputs noPaddingLeft noPaddingRight alignSelfCenter"
+          cols="11"
+        >
           <b-form-select
             v-model="selectedOrdenes"
             :options="optionsOrdenes"
@@ -599,5 +602,8 @@ label {
 }
 #cancelNo {
   margin-left: 15px;
+}
+.alignSelfCenter {
+  align-self: center;
 }
 </style>

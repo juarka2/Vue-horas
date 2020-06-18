@@ -9,7 +9,7 @@
       id="tableCargaHoras"
       :fields="CHFields"
       :items="CHItems"
-      sticky-header="100px"
+      sticky-header="300px"
       thClass="thNoBorder"
       responsive
     ></b-table>
